@@ -25,6 +25,9 @@ export default function Navbar() {
           <NavLink to="/donate" className={({ isActive }) => (isActive ? 'cta active' : 'cta')}>
             Doniraj
           </NavLink>
+          <NavLink to="/contact" className={({ isActive }) => (isActive ? 'active' : '')}>
+            Kontakt
+          </NavLink>
 
           {user && user.role === 'admin' && (
             <NavLink to="/admin" className={({ isActive }) => (isActive ? 'active' : '')}>

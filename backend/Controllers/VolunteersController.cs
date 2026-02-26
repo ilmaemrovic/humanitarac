@@ -17,6 +17,14 @@ namespace HumanitaracApi.Controllers
             _context = context;
         }
 
+        [HttpGet("volunteers")]
+        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Admin")]
+        public IActionResult GetVolunteers()
+        {
+            var volunteers = _context.Volunteers.OrderByDescending(v => v.CreatedAt).ToList();
+            return Ok(volunteers);
+        }
+
         [HttpPost("volunteers")]
         public IActionResult CreateVolunteer([FromBody] CreateVolunteerDto dto)
         {

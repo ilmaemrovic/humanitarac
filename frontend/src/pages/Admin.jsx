@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '../utils/AuthProvider'
-import { createActivity, getActivities, updateActivity, deleteActivity, getParticipations, patchParticipation } from '../api/endpoints'
+import { createActivity, getActivities, updateActivity, deleteActivity, getParticipations, patchParticipation, getContacts, getVolunteers } from '../api/endpoints'
 import Loader from '../components/Loader'
 import ErrorState from '../components/ErrorState'
 import ActivityForm from '../components/ActivityForm'
@@ -12,14 +12,18 @@ export default function Admin() {
   const [error, setError] = useState(null)
   const [editing, setEditing] = useState(null)
   const [participations, setParticipations] = useState([])
+  const [contacts, setContacts] = useState([])
+  const [volunteers, setVolunteers] = useState([])
 
   useEffect(() => {
     if (!auth?.token || auth.user?.role !== 'admin') return
     setLoading(true)
-    Promise.all([getActivities(), getParticipations(auth.token)])
-      .then(([acts, parts]) => {
+    Promise.all([getActivities(), getParticipations(auth.token), getContacts(auth.token), getVolunteers(auth.token)])
+      .then(([acts, parts, msgs, vols]) => {
         setActivities(acts)
         setParticipations(parts)
+        setContacts(Array.isArray(msgs) ? msgs : [])
+        setVolunteers(Array.isArray(vols) ? vols : [])
       })
       .catch((e) => setError(e.message || 'Greška'))
       .finally(() => setLoading(false))
@@ -109,6 +113,39 @@ export default function Admin() {
               </div>
             </div>
           ))}
+          {participations.length === 0 && <p>Nema prijava za učešće.</p>}
+        </div>
+      </section>
+
+      <section>
+        <h2>Prijave za volontiranje</h2>
+        <div className="grid">
+          {volunteers.map((v) => (
+            <div key={v.id} className="card">
+              <h3>{v.name}</h3>
+              <div><strong>Email:</strong> {v.email}</div>
+              <div><strong>Telefon:</strong> {v.phone}</div>
+              <div><strong>Interesi:</strong> {v.interests}</div>
+              <div><strong>Dostupnost:</strong> {v.availability}</div>
+              <div className="meta">Prijavljeno: {new Date(v.createdAt).toLocaleDateString()}</div>
+            </div>
+          ))}
+          {volunteers.length === 0 && <p>Nema prijava za volontiranje.</p>}
+        </div>
+      </section>
+
+      <section>
+        <h2>Kontakt poruke</h2>
+        <div className="grid">
+          {contacts.map((c) => (
+            <div key={c.id} className="card">
+              <h3>{c.name}</h3>
+              <div><strong>Email:</strong> {c.email}</div>
+              <p>{c.message}</p>
+              <div className="meta">{new Date(c.createdAt).toLocaleDateString()}</div>
+            </div>
+          ))}
+          {contacts.length === 0 && <p>Nema kontakt poruka.</p>}
         </div>
       </section>
     </main>

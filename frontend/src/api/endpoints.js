@@ -79,4 +79,9 @@ export async function getContacts(token) {
   return apiFetch({ method: 'GET', url: '/api/contacts', headers })
 }
 
+export async function getVolunteers(token) {
+  const headers = token ? { Authorization: `Bearer ${token}` } : {}
+  return apiFetch({ method: 'GET', url: '/api/volunteers', headers })
+}
+
 export default { getStats, getActivities, postDonation, postVolunteer }

@@ -31,8 +31,4 @@ EXPOSE 5000
 ENV ASPNETCORE_URLS=http://+:5000
 ENV ASPNETCORE_ENVIRONMENT=Production
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:5000/api/activities || exit 1
-
 ENTRYPOINT ["dotnet", "HumanitaracApi.dll"]
