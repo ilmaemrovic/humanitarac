@@ -84,4 +84,11 @@ export async function getVolunteers(token) {
   return apiFetch({ method: 'GET', url: '/api/volunteers', headers })
 }
 
+export async function patchVolunteer(id, payload) {
+  const headers = payload && payload._token ? { Authorization: `Bearer ${payload._token}` } : {}
+  const body = { ...payload }
+  delete body._token
+  return apiFetch({ method: 'PATCH', url: `/api/volunteers/${id}`, body, headers })
+}
+
 export default { getStats, getActivities, postDonation, postVolunteer }

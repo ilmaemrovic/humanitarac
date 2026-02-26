@@ -36,6 +36,7 @@ namespace HumanitaracApi.Controllers
                 Phone = dto.Phone,
                 Interests = string.Join(",", dto.Interests ?? new string[] { }),
                 Availability = dto.Availability,
+                Status = "pending",
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -43,6 +44,22 @@ namespace HumanitaracApi.Controllers
             _context.SaveChanges();
             return Created($"/api/volunteers/{volunteer.Id}", new { ok = true, id = volunteer.Id });
         }
+
+        [HttpPatch("volunteers/{id}")]
+        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Admin")]
+        public IActionResult UpdateVolunteerStatus(string id, [FromBody] UpdateVolunteerStatusDto dto)
+        {
+            var volunteer = _context.Volunteers.FirstOrDefault(v => v.Id == id);
+            if (volunteer == null) return NotFound(new { error = "Volonter nije pronađen" });
+            volunteer.Status = dto.Status;
+            _context.SaveChanges();
+            return Ok(new { ok = true, status = volunteer.Status });
+        }
+    }
+
+    public class UpdateVolunteerStatusDto
+    {
+        public string Status { get; set; }
     }
 
     public class CreateVolunteerDto

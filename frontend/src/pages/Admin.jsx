@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '../utils/AuthProvider'
-import { createActivity, getActivities, updateActivity, deleteActivity, getParticipations, patchParticipation, getContacts, getVolunteers } from '../api/endpoints'
+import { createActivity, getActivities, updateActivity, deleteActivity, getParticipations, patchParticipation, getContacts, getVolunteers, patchVolunteer } from '../api/endpoints'
 import Loader from '../components/Loader'
 import ErrorState from '../components/ErrorState'
 import ActivityForm from '../components/ActivityForm'
@@ -57,6 +57,12 @@ export default function Admin() {
   async function changeParticipationStatus(id, status) {
     await patchParticipation(id, { status, _token: auth.token })
     await refreshParticipations()
+  }
+
+  async function changeVolunteerStatus(id, status) {
+    await patchVolunteer(id, { status, _token: auth.token })
+    const vols = await getVolunteers(auth.token)
+    setVolunteers(Array.isArray(vols) ? vols : [])
   }
 
   if (!auth?.token || auth.user?.role !== 'admin') return <ErrorState message={'Samo za administratore'} />
@@ -127,7 +133,14 @@ export default function Admin() {
               <div><strong>Telefon:</strong> {v.phone}</div>
               <div><strong>Interesi:</strong> {v.interests}</div>
               <div><strong>Dostupnost:</strong> {v.availability}</div>
+              <div><strong>Status:</strong> {v.status === 'pending' ? 'Na čekanju' : v.status === 'accepted' ? 'Prihvaćen' : 'Odbijen'}</div>
               <div className="meta">Prijavljeno: {new Date(v.createdAt).toLocaleDateString()}</div>
+              {v.status === 'pending' && (
+                <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+                  <button className="btn" onClick={() => changeVolunteerStatus(v.id, 'accepted')}>Prihvati</button>
+                  <button className="btn" onClick={() => changeVolunteerStatus(v.id, 'rejected')}>Odbij</button>
+                </div>
+              )}
             </div>
           ))}
           {volunteers.length === 0 && <p>Nema prijava za volontiranje.</p>}
