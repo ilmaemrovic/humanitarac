@@ -68,10 +68,6 @@ namespace HumanitaracApi
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                app.UseHttpsRedirection();
-            }
 
             app.UseRouting();
             app.UseCors();
