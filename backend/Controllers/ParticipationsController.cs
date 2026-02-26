@@ -25,7 +25,7 @@ namespace HumanitaracApi.Controllers
         [Authorize]
         public IActionResult JoinActivity(string id, [FromBody] JoinActivityDto dto)
         {
-            var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue(JwtRegisteredClaimNames.Sub);
             var userName = User.FindFirstValue(ClaimTypes.Name);
             if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
