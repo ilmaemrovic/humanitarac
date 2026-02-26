@@ -86,7 +86,7 @@ export default function Admin() {
               <h3>{a.title} {a.completed && <span className="tag">Završeno</span>}</h3>
               <div className="meta">{a.city} • {new Date(a.date).toLocaleDateString()}</div>
               <p>{a.description}</p>
-              <div style={{ display: 'flex', gap: 8 }}>
+              <div className="admin-actions">
                 <button className="btn" onClick={() => setEditing(a)}>Izmijeni</button>
                 <button className="btn" onClick={() => handleDelete(a.id)}>Obriši</button>
                 <button className="btn" onClick={async () => { await updateActivity(a.id, { completed: !a.completed, _token: auth.token }); const acts = await getActivities(); setActivities(acts) }}>
@@ -113,7 +113,7 @@ export default function Admin() {
               <div><strong>{p.userName}</strong> za aktivnost {p.activityId}</div>
               <div>{p.note}</div>
               <div>Status: {p.status}</div>
-              <div style={{ display: 'flex', gap: 8 }}>
+              <div className="admin-actions">
                 <button className="btn" onClick={() => changeParticipationStatus(p.id, 'accepted')}>Prihvati</button>
                 <button className="btn" onClick={() => changeParticipationStatus(p.id, 'rejected')}>Odbij</button>
               </div>
@@ -136,7 +136,7 @@ export default function Admin() {
               <div><strong>Status:</strong> {v.status === 'pending' ? 'Na čekanju' : v.status === 'accepted' ? 'Prihvaćen' : 'Odbijen'}</div>
               <div className="meta">Prijavljeno: {new Date(v.createdAt).toLocaleDateString()}</div>
               {v.status === 'pending' && (
-                <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+                <div className="admin-actions">
                   <button className="btn" onClick={() => changeVolunteerStatus(v.id, 'accepted')}>Prihvati</button>
                   <button className="btn" onClick={() => changeVolunteerStatus(v.id, 'rejected')}>Odbij</button>
                 </div>

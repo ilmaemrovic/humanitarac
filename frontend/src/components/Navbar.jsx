@@ -1,15 +1,32 @@
-import React from 'react'
-import { NavLink, Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { NavLink, Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../utils/AuthProvider'
 
 export default function Navbar() {
   const { user, logout } = useAuth() || {}
+  const [menuOpen, setMenuOpen] = useState(false)
+  const location = useLocation()
+
+  // Close menu on route change
+  useEffect(() => { setMenuOpen(false) }, [location.pathname])
 
   return (
     <header className="nav">
       <div className="container nav-inner">
         <div className="brand">Humanitarac</div>
-        <nav>
+
+        <button
+          className="hamburger"
+          onClick={() => setMenuOpen((o) => !o)}
+          aria-label="Toggle menu"
+          aria-expanded={menuOpen}
+        >
+          <span className={`hamburger-line ${menuOpen ? 'open' : ''}`} />
+          <span className={`hamburger-line ${menuOpen ? 'open' : ''}`} />
+          <span className={`hamburger-line ${menuOpen ? 'open' : ''}`} />
+        </button>
+
+        <nav className={`nav-links ${menuOpen ? 'nav-open' : ''}`}>
           <NavLink to="/" end className={({ isActive }) => (isActive ? 'active' : '')}>
             Početna
           </NavLink>
@@ -36,17 +53,17 @@ export default function Navbar() {
           )}
 
           {!user ? (
-            <>
+            <div className="nav-auth">
               <Link to="/signin">Prijava</Link>
               <Link to="/register" className="btn">Registracija</Link>
-            </>
+            </div>
           ) : (
-            <>
-              <span style={{ marginLeft: 10 }}>Zdravo, {user.name}</span>
-              <button className="btn" onClick={() => logout()} style={{ marginLeft: 8 }}>
+            <div className="nav-auth">
+              <span className="nav-greeting">Zdravo, {user.name}</span>
+              <button className="btn" onClick={() => logout()}>
                 Odjavi se
               </button>
-            </>
+            </div>
           )}
         </nav>
       </div>
