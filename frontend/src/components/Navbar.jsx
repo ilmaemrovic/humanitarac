@@ -29,7 +29,7 @@ export default function Navbar() {
             Kontakt
           </NavLink>
 
-          {user && user.role === 'admin' && (
+          {user && user.role?.toLowerCase() === 'admin' && (
             <NavLink to="/admin" className={({ isActive }) => (isActive ? 'active' : '')}>
               Admin
             </NavLink>

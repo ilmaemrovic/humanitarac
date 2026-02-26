@@ -16,7 +16,7 @@ export default function Admin() {
   const [volunteers, setVolunteers] = useState([])
 
   useEffect(() => {
-    if (!auth?.token || auth.user?.role !== 'admin') return
+    if (!auth?.token || auth.user?.role?.toLowerCase() !== 'admin') return
     setLoading(true)
     Promise.all([getActivities(), getParticipations(auth.token), getContacts(auth.token), getVolunteers(auth.token)])
       .then(([acts, parts, msgs, vols]) => {
@@ -65,7 +65,7 @@ export default function Admin() {
     setVolunteers(Array.isArray(vols) ? vols : [])
   }
 
-  if (!auth?.token || auth.user?.role !== 'admin') return <ErrorState message={'Samo za administratore'} />
+  if (!auth?.token || auth.user?.role?.toLowerCase() !== 'admin') return <ErrorState message={'Samo za administratore'} />
   if (loading) return <Loader />
   if (error) return <ErrorState message={error} />
 
