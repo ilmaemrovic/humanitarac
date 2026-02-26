@@ -1,0 +1,51 @@
+# Environment files - NEVER commit secrets
+.env.local
+.env.*.local
+.env.production.local
+appsettings.Development.json
+
+# Dependencies
+node_modules/
+package-lock.json
+/backend/bin/
+/backend/obj/
+/backend/.vs/
+/backend/.vscode/
+
+# Build outputs
+/frontend/dist/
+/frontend/build/
+/backend/publish/
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+dotnet-trace-*
+
+# IDE
+.vscode/
+.vs/
+*.swp
+*.swo
+*~
+.idea/
+*.user
+*.suo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Database
+*.db
+*.sqlite
+mysql_data/
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# Cache
+.npm
+.eslintcache

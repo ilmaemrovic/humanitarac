@@ -1,0 +1,20 @@
+github:
+  - name: ilmaemrovic/humanitarac-dunp
+    description: "Volunteer & Donation Management Platform"
+    topics:
+      - react
+      - vite
+      - dotnet
+      - aspnetcore
+      - mysql
+      - volunteer
+      - nodejs
+
+gitignore:
+  - node_modules/
+  - bin/
+  - obj/
+  - dist/
+  - .env.local
+  - .DS_Store
+  - *.log
