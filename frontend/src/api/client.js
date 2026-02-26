@@ -119,7 +119,13 @@ class ApiClient {
         }
 
         const res = await fetch(fetchUrl, fetchOptions)
-        const data = await res.json()
+        let data = null
+        try {
+          const text = await res.text()
+          data = text ? JSON.parse(text) : null
+        } catch {
+          data = null
+        }
         response = { status: res.status, data, ok: res.ok }
       }
 
@@ -127,7 +133,8 @@ class ApiClient {
 
       // Check for errors
       if (!response || response.error || !response.ok) {
-        const err = new Error(response?.message || 'Network error')
+        const msg = response?.data?.message || response?.data?.title || response?.message || `Request failed with status ${response?.status || 'unknown'}`
+        const err = new Error(msg)
         err.status = response?.status || 500
         err.response = response
         throw err
