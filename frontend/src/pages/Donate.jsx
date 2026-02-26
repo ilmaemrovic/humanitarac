@@ -73,7 +73,7 @@ export default function Donate() {
         </label>
 
         <label>
-          Iznos (KM)
+          Iznos (€)
           <input name="amount" value={form.amount} onChange={handleChange} type="number" min="1" />
           {errors.amount && <div className="field-error">{errors.amount}</div>}
         </label>

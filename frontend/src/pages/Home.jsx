@@ -62,7 +62,7 @@ export default function Home() {
             <div className="label">Akcije</div>
           </div>
           <div className="stat">
-            <div className="num">{stats.raised} KM</div>
+            <div className="num">{stats.raised} €</div>
             <div className="label">Prikupljeno</div>
           </div>
           <div className="stat">
