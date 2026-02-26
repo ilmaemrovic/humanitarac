@@ -48,7 +48,20 @@ namespace HumanitaracApi
                     ValidIssuer = jwtSection["Issuer"],
                     ValidAudience = jwtSection["Audience"],
                     IssuerSigningKey = key,
-                    ClockSkew = TimeSpan.Zero
+                    ClockSkew = TimeSpan.FromMinutes(5)
+                };
+                options.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        Console.WriteLine($"JWT AUTH FAILED: {context.Exception.GetType().Name}: {context.Exception.Message}");
+                        return System.Threading.Tasks.Task.CompletedTask;
+                    },
+                    OnTokenValidated = context =>
+                    {
+                        Console.WriteLine($"JWT TOKEN VALIDATED for {context.Principal?.Identity?.Name}");
+                        return System.Threading.Tasks.Task.CompletedTask;
+                    }
                 };
             });
 
