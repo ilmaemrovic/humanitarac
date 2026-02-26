@@ -210,16 +210,7 @@ export const apiClient = new ApiClient()
  * Default export for backward compatibility
  */
 export async function apiFetch({ method = 'GET', url, body = null, headers = {} }) {
-  const payload = body ? JSON.parse(JSON.stringify(body)) : null
-  const res = await mockServer.handleRequest({ method, url, body: payload, headers })
-
-  if (!res || res.error) {
-    const err = new Error(res?.message || 'Network error')
-    err.status = res?.status || 500
-    throw err
-  }
-
-  return res.data
+  return apiClient.request({ method, url, body, headers })
 }
 
 export default apiClient
