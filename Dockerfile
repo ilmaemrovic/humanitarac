@@ -24,11 +24,11 @@ WORKDIR /app
 # Copy from build stage
 COPY --from=build /app/publish .
 
-# Expose port
+# Expose port (Railway sets PORT dynamically)
 EXPOSE 5000
 
 # Set environment
-ENV ASPNETCORE_URLS=http://+:5000
 ENV ASPNETCORE_ENVIRONMENT=Production
 
-ENTRYPOINT ["dotnet", "HumanitaracApi.dll"]
+# Use shell form so $PORT is expanded at runtime
+CMD ASPNETCORE_URLS=http://+:${PORT:-5000} dotnet HumanitaracApi.dll
