@@ -36,16 +36,21 @@ export default function Home() {
   return (
     <main className="container">
       <section className="hero">
-        <div className="hero-inner">
-          <h1>Podržimo zajednice zajedno</h1>
-          <p className="lead">Pomažemo ljudima u kriznim momentima i gradimo održive lokalne inicijative.</p>
-          <div className="hero-cta">
-            <Link to="/donate" className="btn primary">
-              Doniraj
-            </Link>
-            <Link to="/volunteer" className="btn outline">
-              Pridruži se kao volonter
-            </Link>
+        <div className="hero-inner hero-split">
+          <div className="hero-text">
+            <h1>Podržimo zajednice zajedno</h1>
+            <p className="lead">Pomažemo ljudima u kriznim momentima i gradimo održive lokalne inicijative.</p>
+            <div className="hero-cta">
+              <Link to="/donate" className="btn primary">
+                Doniraj
+              </Link>
+              <Link to="/volunteer" className="btn outline">
+                Pridruži se kao volonter
+              </Link>
+            </div>
+          </div>
+          <div className="hero-img">
+            <img src="https://cim.org.rs/wp-content/uploads/2021/05/charity_754x556px-600x442-1.jpeg" alt="Humanitarni rad" />
           </div>
         </div>
       </section>

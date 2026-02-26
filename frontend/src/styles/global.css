@@ -42,6 +42,10 @@ img,video,svg{max-width:100%;height:auto}
 /* ===== Hero ===== */
 .hero{padding:40px 0 30px;background:linear-gradient(180deg, #fff6ee, transparent);border-radius:var(--radius);margin:18px 0}
 .hero-inner{display:flex;flex-direction:column;gap:14px}
+.hero-split{flex-direction:row;align-items:center;gap:32px}
+.hero-text{flex:1}
+.hero-img{flex:1;max-width:480px}
+.hero-img img{width:100%;border-radius:var(--radius);box-shadow:0 8px 24px var(--shadow);object-fit:cover}
 .hero h1{margin:0;font-size:2.1rem;line-height:1.25}
 .lead{color:var(--muted);font-size:1.05rem}
 .hero-cta{display:flex;gap:10px;flex-wrap:wrap}
@@ -111,6 +115,8 @@ textarea{resize:vertical;min-height:80px}
    ================================================================ */
 @media (max-width:768px){
   .container{padding:14px 16px}
+  .hero-split{flex-direction:column;gap:20px}
+  .hero-img{max-width:100%}
   .hero h1{font-size:1.6rem}
   .stats-grid{grid-template-columns:repeat(3,1fr);gap:10px}
   .stat{padding:14px 10px}
@@ -126,6 +132,7 @@ textarea{resize:vertical;min-height:80px}
 @media (max-width:480px){
   .container{padding:12px 14px}
   .hero{padding:24px 0 18px;margin:10px 0}
+  .hero-split{gap:16px}
   .hero h1{font-size:1.35rem}
   .lead{font-size:0.95rem}
   .hero-cta{flex-direction:column;gap:8px}
