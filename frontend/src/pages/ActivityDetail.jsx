@@ -4,6 +4,7 @@ import { getActivities, joinActivity } from '../api/endpoints'
 import Loader from '../components/Loader'
 import ErrorState from '../components/ErrorState'
 import { useAuth } from '../utils/AuthProvider'
+import { getActivityImage } from '../utils/activityImages'
 
 export default function ActivityDetail() {
   const { id } = useParams()
@@ -46,6 +47,9 @@ export default function ActivityDetail() {
 
   return (
     <main className="container">
+      <div className="detail-hero">
+        <img src={getActivityImage(activity)} alt={activity.title} className="detail-hero-img" />
+      </div>
       <h1>{activity.title} {activity.completed && <span className="tag">Završeno</span>}</h1>
       <div className="meta">{activity.city} • {new Date(activity.date).toLocaleDateString()}</div>
       <p>{activity.description}</p>
