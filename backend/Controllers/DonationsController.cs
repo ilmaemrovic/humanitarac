@@ -25,8 +25,8 @@ namespace HumanitaracApi.Controllers
         [Authorize]
         public IActionResult CreateDonation([FromBody] CreateDonationDto dto)
         {
-            var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
-            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized(new { message = "Neispravan token" });
 
             var donation = new Donation
             {
