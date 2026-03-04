@@ -9,8 +9,8 @@ export default function Activities() {
   const [activities, setActivities] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [category, setCategory] = useState('All')
-  const [city, setCity] = useState('All')
+  const [category, setCategory] = useState('Sve')
+  const [city, setCity] = useState('Sve')
   const [query, setQuery] = useState('')
 
   useEffect(() => {
@@ -23,13 +23,13 @@ export default function Activities() {
     return () => (mounted = false)
   }, [])
 
-  const categories = useMemo(() => ['All', ...Array.from(new Set(activities.map((a) => a.category)))], [activities])
-  const cities = useMemo(() => ['All', ...Array.from(new Set(activities.map((a) => a.city)))], [activities])
+  const categories = useMemo(() => ['Sve', ...Array.from(new Set(activities.map((a) => a.category)))], [activities])
+  const cities = useMemo(() => ['Sve', ...Array.from(new Set(activities.map((a) => a.city)))], [activities])
 
   const filtered = useMemo(() => {
     return activities.filter((a) => {
-      if (category !== 'All' && a.category !== category) return false
-      if (city !== 'All' && a.city !== city) return false
+      if (category !== 'Sve' && a.category !== category) return false
+      if (city !== 'Sve' && a.city !== city) return false
       if (query && !a.title.toLowerCase().includes(query.toLowerCase())) return false
       return true
     })
