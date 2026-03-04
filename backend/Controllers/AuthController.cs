@@ -39,7 +39,7 @@ namespace HumanitaracApi.Controllers
                 Name = dto.Name,
                 Email = dto.Email,
                 Password = dto.Password,
-                Role = string.IsNullOrWhiteSpace(dto.Role) ? "User" : dto.Role
+                Role = "User"
             };
 
             _context.Users.Add(user);
@@ -58,7 +58,7 @@ namespace HumanitaracApi.Controllers
         public IActionResult Login([FromBody] LoginDto dto)
         {
             var user = _context.Users.FirstOrDefault(u => u.Email == dto.Email && u.Password == dto.Password);
-            if (user == null) return Unauthorized();
+            if (user == null) return Unauthorized(new { message = "Pogrešan email ili lozinka" });
 
             var token = GenerateToken(user);
             return Ok(new
@@ -100,7 +100,6 @@ namespace HumanitaracApi.Controllers
         public string Name { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public string Role { get; set; }
     }
 
     public class LoginDto

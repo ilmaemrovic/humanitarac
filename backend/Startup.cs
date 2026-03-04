@@ -72,7 +72,13 @@ namespace HumanitaracApi
                 p.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()
             ));
 
-            services.AddControllers();
+            services.AddControllers()
+                .ConfigureApiBehaviorOptions(options => {
+                    options.SuppressModelStateInvalidFilter = false;
+                })
+                .AddJsonOptions(opts => {
+                    opts.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+                });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
