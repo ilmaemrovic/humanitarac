@@ -3,14 +3,16 @@ using System;
 using HumanitaracApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace HumanitaracApi.Migrations
 {
     [DbContext(typeof(HumanitaracDbContext))]
-    partial class HumanitaracDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260304140238_AddMoreActivities")]
+    partial class AddMoreActivities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

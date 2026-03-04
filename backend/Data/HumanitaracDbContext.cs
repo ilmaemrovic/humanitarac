@@ -62,7 +62,13 @@ namespace HumanitaracApi.Data
                 new Activity { Id = "a1", Title = "Distribucija hrane i higijene", Date = now.AddDays(-3), City = "Novi Pazar", Category = "Pomoć", Description = "Podjela prehrambenih paketa." },
                 new Activity { Id = "a2", Title = "Edukacija o sanitaciji", Date = now.AddDays(-10), City = "Sjenica", Category = "Edukacija", Description = "Radionica o higijeni." },
                 new Activity { Id = "a3", Title = "Prikupljanje pomoći", Date = now.AddDays(-20), City = "Tutin", Category = "Krizna pomoć", Description = "Prikupljanje potrepština." },
-                new Activity { Id = "a4", Title = "Park Čišćenje", Date = now.AddDays(-30), City = "Beograd", Category = "Volontiranje", Description = "Čišćenje parka." }
+                new Activity { Id = "a4", Title = "Park Čišćenje", Date = now.AddDays(-30), City = "Beograd", Category = "Volontiranje", Description = "Čišćenje parka." },
+                new Activity { Id = "a5", Title = "Podrška starijim osobama", Date = now.AddDays(-5), City = "Niš", Category = "Pomoć", Description = "Obilazak i pomoć starijim sugrađanima u svakodnevnim aktivnostima." },
+                new Activity { Id = "a6", Title = "Radionica kreativnog pisanja", Date = now.AddDays(-15), City = "Kragujevac", Category = "Edukacija", Description = "Kreativne radionice za djecu i mlade u lokalnoj biblioteci." },
+                new Activity { Id = "a7", Title = "Sadnja drveća", Date = now.AddDays(-8), City = "Novi Sad", Category = "Volontiranje", Description = "Akcija sadnje 200 stabala u gradskom parku." },
+                new Activity { Id = "a8", Title = "Prikupljanje odjeće za zimu", Date = now.AddDays(-25), City = "Prijepolje", Category = "Krizna pomoć", Description = "Prikupljanje tople odjeće i obuće za socijalno ugrožene porodice." },
+                new Activity { Id = "a9", Title = "Besplatni medicinski pregledi", Date = now.AddDays(-12), City = "Beograd", Category = "Pomoć", Description = "Organizacija besplatnih preventivnih zdravstvenih pregleda." },
+                new Activity { Id = "a10", Title = "IT obuka za nezaposlene", Date = now.AddDays(-7), City = "Novi Pazar", Category = "Edukacija", Description = "Besplatni kursevi osnova programiranja za nezaposlene mlade." }
             );
         }
     }
