@@ -1,7 +1,7 @@
 // Simple in-memory mock server to simulate latency and occasional failures.
 
 function randDelay() {
-  return 400 + Math.floor(Math.random() * 500) // 400-900ms
+  return 50 + Math.floor(Math.random() * 100) // 50-150ms (fast)
 }
 
 function shouldFail() {

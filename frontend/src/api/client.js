@@ -99,6 +99,10 @@ class ApiClient {
           body: payload,
           headers: requestConfig.headers,
         })
+        // Mock server returns { data, status } without 'ok' — derive it from status
+        if (response && !response.error) {
+          response.ok = response.status >= 200 && response.status < 400
+        }
       } else {
         // Use real HTTP fetch
         const fetchUrl = requestConfig.url.startsWith('http') 
