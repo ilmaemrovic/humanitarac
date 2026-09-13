@@ -13,6 +13,7 @@ namespace HumanitaracApi.Data
         public DbSet<Volunteer> Volunteers { get; set; }
         public DbSet<Participation> Participations { get; set; }
         public DbSet<Contact> Contacts { get; set; }
+        public DbSet<TaskItem> TaskItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

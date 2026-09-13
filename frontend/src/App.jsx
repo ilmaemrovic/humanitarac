@@ -13,6 +13,7 @@ import Register from './pages/Register'
 import ActivityDetail from './pages/ActivityDetail'
 import Admin from './pages/Admin'
 import Contact from './pages/Contact'
+import Tasks from './pages/Tasks'
 import './styles/global.css'
 import { AuthProvider } from './utils/AuthProvider'
 import { useAuth } from './utils/AuthProvider'
@@ -35,6 +36,7 @@ function AppContent() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/register" element={<Register />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/tasks" element={<Tasks />} />
         <Route path="/contact" element={<Contact />} />
       </Routes>
       <Footer />

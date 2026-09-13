@@ -46,6 +46,12 @@ export default function Navbar() {
             Kontakt
           </NavLink>
 
+          {user && (
+            <NavLink to="/tasks" className={({ isActive }) => (isActive ? 'active' : '')}>
+              Zadaci
+            </NavLink>
+          )}
+
           {user && user.role?.toLowerCase() === 'admin' && (
             <NavLink to="/admin" className={({ isActive }) => (isActive ? 'active' : '')}>
               Admin

@@ -91,4 +91,29 @@ export async function patchVolunteer(id, payload) {
   return apiFetch({ method: 'PATCH', url: `/api/volunteers/${id}`, body, headers })
 }
 
+// ===== Tasks (authenticated) =====
+export async function getTasks(token) {
+  const headers = token ? { Authorization: `Bearer ${token}` } : {}
+  return apiFetch({ method: 'GET', url: '/api/tasks', headers })
+}
+
+export async function createTask(payload) {
+  const headers = payload && payload._token ? { Authorization: `Bearer ${payload._token}` } : {}
+  const body = { ...payload }
+  delete body._token
+  return apiFetch({ method: 'POST', url: '/api/tasks', body, headers })
+}
+
+export async function updateTask(id, payload) {
+  const headers = payload && payload._token ? { Authorization: `Bearer ${payload._token}` } : {}
+  const body = { ...payload }
+  delete body._token
+  return apiFetch({ method: 'PUT', url: `/api/tasks/${id}`, body, headers })
+}
+
+export async function deleteTask(id, token) {
+  const headers = token ? { Authorization: `Bearer ${token}` } : {}
+  return apiFetch({ method: 'DELETE', url: `/api/tasks/${id}`, headers })
+}
+
 export default { getStats, getActivities, postDonation, postVolunteer }
