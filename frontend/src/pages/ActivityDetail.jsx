@@ -13,6 +13,7 @@ export default function ActivityDetail() {
   const [error, setError] = useState(null)
   const [joining, setJoining] = useState(false)
   const [joined, setJoined] = useState(false)
+  const [joinError, setJoinError] = useState(null)
   const auth = useAuth()
 
   useEffect(() => {
@@ -30,13 +31,14 @@ export default function ActivityDetail() {
   }, [id])
 
   async function handleJoin() {
-    if (!auth?.token) return setError('Morate biti prijavljeni da se prijavite za učešće')
+    if (!auth?.token) return setJoinError('Morate biti prijavljeni da se prijavite za učešće')
     setJoining(true)
+    setJoinError(null)
     try {
       await joinActivity(id, { note: '', _token: auth.token })
       setJoined(true)
     } catch (err) {
-      setError(err.message || 'Greška pri prijavi')
+      setJoinError(err.message || 'Greška pri prijavi')
     } finally {
       setJoining(false)
     }
@@ -69,6 +71,7 @@ export default function ActivityDetail() {
       ) : (
         <div className="toast success">Prijava poslana.</div>
       )}
+      {joinError && <div className="toast error">{joinError}</div>}
     </main>
   )
 }

@@ -27,6 +27,9 @@ namespace HumanitaracApi.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue(JwtRegisteredClaimNames.Sub);
             if (string.IsNullOrEmpty(userId)) return Unauthorized(new { message = "Neispravan token" });
+            if (string.IsNullOrWhiteSpace(dto.Name) || string.IsNullOrWhiteSpace(dto.Email))
+                return BadRequest(new { message = "Ime i email su obavezni." });
+            if (dto.Amount <= 0) return BadRequest(new { message = "Iznos mora biti veći od 0." });
 
             var donation = new Donation
             {

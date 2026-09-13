@@ -14,6 +14,8 @@ namespace HumanitaracApi.Controllers
     [Route("api")]
     public class ParticipationsController : ControllerBase
     {
+        private static readonly string[] ValidStatuses = { "pending", "accepted", "rejected" };
+
         private readonly HumanitaracDbContext _context;
 
         public ParticipationsController(HumanitaracDbContext context)
@@ -31,6 +33,9 @@ namespace HumanitaracApi.Controllers
 
             var activity = _context.Activities.FirstOrDefault(a => a.Id == id);
             if (activity == null) return NotFound(new { message = "Activity not found" });
+            if (activity.Completed) return BadRequest(new { message = "Ova akcija je završena." });
+            if (_context.Participations.Any(p => p.ActivityId == id && p.UserId == userId))
+                return Conflict(new { message = "Već ste prijavljeni za ovu aktivnost." });
 
             var participation = new Participation
             {
@@ -38,7 +43,7 @@ namespace HumanitaracApi.Controllers
                 ActivityId = id,
                 UserId = userId,
                 UserName = userName,
-                Note = dto.Note ?? "",
+                Note = dto?.Note ?? "",
                 Status = "pending",
                 CreatedAt = DateTime.UtcNow
             };
@@ -62,6 +67,8 @@ namespace HumanitaracApi.Controllers
         {
             var participation = _context.Participations.FirstOrDefault(p => p.Id == id);
             if (participation == null) return NotFound();
+            if (!string.IsNullOrEmpty(dto.Status) && !ValidStatuses.Contains(dto.Status))
+                return BadRequest(new { message = "Nevažeći status" });
 
             if (!string.IsNullOrEmpty(dto.Status)) participation.Status = dto.Status;
             if (!string.IsNullOrEmpty(dto.Note)) participation.Note = dto.Note;

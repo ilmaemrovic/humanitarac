@@ -74,6 +74,7 @@ export default function Tasks() {
       status: form.status,
       priority: form.priority,
       dueDate: form.dueDate || null,
+      clearDueDate: !form.dueDate,
       _token: auth.token,
     }
 

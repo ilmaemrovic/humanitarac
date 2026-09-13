@@ -15,6 +15,9 @@ namespace HumanitaracApi.Controllers
     [Authorize]
     public class TasksController : ControllerBase
     {
+        private static readonly HashSet<string> ValidStatuses = new HashSet<string> { "todo", "in-progress", "done" };
+        private static readonly HashSet<string> ValidPriorities = new HashSet<string> { "low", "medium", "high" };
+
         private readonly HumanitaracDbContext _context;
 
         public TasksController(HumanitaracDbContext context)
@@ -88,11 +91,15 @@ namespace HumanitaracApi.Controllers
 
             if (string.IsNullOrWhiteSpace(dto.Title))
                 return BadRequest(new { message = "Naslov je obavezan" });
+            if (dto.Status != null && !ValidStatuses.Contains(dto.Status))
+                return BadRequest(new { message = "Nevažeći status" });
+            if (dto.Priority != null && !ValidPriorities.Contains(dto.Priority))
+                return BadRequest(new { message = "Nevažeći prioritet" });
 
             var task = new TaskItem
             {
                 Id = "task_" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
-                Title = dto.Title,
+                Title = dto.Title.Trim(),
                 Description = dto.Description ?? "",
                 Status = dto.Status ?? "todo",
                 Priority = dto.Priority ?? "medium",
@@ -129,11 +136,16 @@ namespace HumanitaracApi.Controllers
             var task = _context.TaskItems.FirstOrDefault(t => t.Id == id && t.UserId == userId);
             if (task == null) return NotFound(new { message = "Task nije pronađen" });
 
-            if (!string.IsNullOrWhiteSpace(dto.Title)) task.Title = dto.Title;
+            if (!string.IsNullOrWhiteSpace(dto.Status) && !ValidStatuses.Contains(dto.Status))
+                return BadRequest(new { message = "Nevažeći status" });
+            if (!string.IsNullOrWhiteSpace(dto.Priority) && !ValidPriorities.Contains(dto.Priority))
+                return BadRequest(new { message = "Nevažeći prioritet" });
+
+            if (!string.IsNullOrWhiteSpace(dto.Title)) task.Title = dto.Title.Trim();
             if (dto.Description != null) task.Description = dto.Description;
             if (!string.IsNullOrWhiteSpace(dto.Status)) task.Status = dto.Status;
             if (!string.IsNullOrWhiteSpace(dto.Priority)) task.Priority = dto.Priority;
-            if (dto.DueDate.HasValue) task.DueDate = dto.DueDate;
+            if (dto.DueDate.HasValue || dto.ClearDueDate) task.DueDate = dto.DueDate;
 
             _context.SaveChanges();
 
@@ -186,5 +198,7 @@ namespace HumanitaracApi.Controllers
         public string Status { get; set; }
         public string Priority { get; set; }
         public DateTime? DueDate { get; set; }
+        // DueDate null means "unchanged" unless this is set
+        public bool ClearDueDate { get; set; }
     }
 }

@@ -30,6 +30,10 @@ namespace HumanitaracApi.Controllers
             if (string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.Password) || string.IsNullOrWhiteSpace(dto.Name))
                 return BadRequest(new { message = "Missing fields" });
 
+            dto.Email = dto.Email.Trim();
+            if (!System.Text.RegularExpressions.Regex.IsMatch(dto.Email, @"^[^\s@]+@[^\s@]+\.[^\s@]+$"))
+                return BadRequest(new { message = "Nevažeći email" });
+
             if (_context.Users.Any(u => u.Email == dto.Email))
                 return Conflict(new { message = "Email already registered" });
 

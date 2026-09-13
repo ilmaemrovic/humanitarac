@@ -28,6 +28,9 @@ namespace HumanitaracApi.Controllers
         [HttpPost("volunteers")]
         public IActionResult CreateVolunteer([FromBody] CreateVolunteerDto dto)
         {
+            if (string.IsNullOrWhiteSpace(dto.Name) || string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.Phone))
+                return BadRequest(new { message = "Ime, email i telefon su obavezni." });
+
             var volunteer = new Volunteer
             {
                 Id = "v_" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
@@ -51,6 +54,8 @@ namespace HumanitaracApi.Controllers
         {
             var volunteer = _context.Volunteers.FirstOrDefault(v => v.Id == id);
             if (volunteer == null) return NotFound(new { error = "Volonter nije pronađen" });
+            if (dto.Status != "pending" && dto.Status != "accepted" && dto.Status != "rejected")
+                return BadRequest(new { message = "Nevažeći status" });
             volunteer.Status = dto.Status;
             _context.SaveChanges();
             return Ok(new { ok = true, status = volunteer.Status });

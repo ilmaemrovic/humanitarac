@@ -41,14 +41,17 @@ namespace HumanitaracApi.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult CreateActivity([FromBody] CreateActivityDto dto)
         {
+            if (string.IsNullOrWhiteSpace(dto.Title) || string.IsNullOrWhiteSpace(dto.City) || string.IsNullOrWhiteSpace(dto.Category) || !dto.Date.HasValue)
+                return BadRequest(new { message = "Naziv, datum, grad i kategorija su obavezni." });
+
             var activity = new Activity
             {
                 Id = "a_" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
-                Title = dto.Title,
-                Description = dto.Description,
-                City = dto.City,
-                Category = dto.Category,
-                Date = dto.Date,
+                Title = dto.Title.Trim(),
+                Description = dto.Description ?? "",
+                City = dto.City.Trim(),
+                Category = dto.Category.Trim(),
+                Date = dto.Date.Value,
                 CreatedAt = DateTime.UtcNow
             };
             _context.Activities.Add(activity);
@@ -105,7 +108,7 @@ namespace HumanitaracApi.Controllers
         public string Description { get; set; }
         public string City { get; set; }
         public string Category { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime? Date { get; set; }
     }
 
     public class UpdateActivityDto

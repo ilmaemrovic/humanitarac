@@ -21,6 +21,9 @@ namespace HumanitaracApi.Controllers
         [HttpPost("contact")]
         public IActionResult CreateContact([FromBody] CreateContactDto dto)
         {
+            if (string.IsNullOrWhiteSpace(dto.Name) || string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.Message))
+                return BadRequest(new { message = "Ime, email i poruka su obavezni." });
+
             var contact = new Contact
             {
                 Id = "c_" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
