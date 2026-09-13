@@ -4,7 +4,8 @@
  */
 
 export const config = {
-  apiBaseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000',
+  // An empty VITE_API_BASE_URL means same origin (frontend served by the backend)
+  apiBaseUrl: import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:5000',
   apiTimeout: parseInt(import.meta.env.VITE_API_TIMEOUT || '10000', 10),
   enableMockServer: import.meta.env.VITE_ENABLE_MOCK_SERVER === 'true',
   appName: import.meta.env.VITE_APP_NAME || 'Humanitarac',

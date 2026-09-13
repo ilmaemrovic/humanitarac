@@ -1,4 +1,16 @@
-# Build stage
+# Frontend build stage
+FROM node:20-alpine AS frontend
+
+WORKDIR /frontend
+
+COPY frontend/package*.json ./
+RUN npm install --legacy-peer-deps
+
+COPY frontend/ .
+# Empty base URL: the API is served from the same origin
+RUN VITE_API_BASE_URL= npm run build
+
+# Backend build stage
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 
 WORKDIR /app
@@ -23,6 +35,9 @@ WORKDIR /app
 
 # Copy from build stage
 COPY --from=build /app/publish .
+
+# Frontend is served by the backend from wwwroot
+COPY --from=frontend /frontend/dist ./wwwroot
 
 # Expose port (Railway sets PORT dynamically)
 EXPOSE 5000

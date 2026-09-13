@@ -3,6 +3,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -90,6 +91,14 @@ namespace HumanitaracApi
                 app.UseDeveloperExceptionPage();
             }
 
+            // Serve the built frontend from wwwroot when present (production Docker image)
+            var hasFrontend = System.IO.File.Exists(System.IO.Path.Combine(env.WebRootPath ?? "", "index.html"));
+            if (hasFrontend)
+            {
+                app.UseDefaultFiles();
+                app.UseStaticFiles();
+            }
+
             app.UseRouting();
             app.UseCors();
             app.UseAuthentication();
@@ -98,6 +107,20 @@ namespace HumanitaracApi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                if (hasFrontend)
+                {
+                    // Client-side routes (e.g. /activities/a1) get index.html; unknown /api routes stay 404
+                    endpoints.MapFallback(context =>
+                    {
+                        if (context.Request.Path.StartsWithSegments("/api"))
+                        {
+                            context.Response.StatusCode = 404;
+                            return System.Threading.Tasks.Task.CompletedTask;
+                        }
+                        context.Response.ContentType = "text/html";
+                        return context.Response.SendFileAsync(System.IO.Path.Combine(env.WebRootPath, "index.html"));
+                    });
+                }
             });
         }
     }
