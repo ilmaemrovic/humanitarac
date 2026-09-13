@@ -72,7 +72,9 @@ namespace HumanitaracApi
                 p.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()
             ));
 
-            services.AddControllers()
+            // <Nullable>enable</Nullable> would otherwise make every non-nullable DTO string implicitly
+            // [Required], rejecting partial updates like { status: "done" }. Controllers validate explicitly.
+            services.AddControllers(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true)
                 .ConfigureApiBehaviorOptions(options => {
                     options.SuppressModelStateInvalidFilter = false;
                 })
