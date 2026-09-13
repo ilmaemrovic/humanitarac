@@ -12,6 +12,7 @@ class ApiClient {
     this.requestInterceptors = []
     this.responseInterceptors = []
     this.requestCache = new Map()
+    this.onUnauthorized = null
   }
 
   /**
@@ -134,6 +135,11 @@ class ApiClient {
       }
 
       if (timeoutId) clearTimeout(timeoutId)
+
+      // A rejected token on an authenticated request means the session is no longer valid
+      if (response?.status === 401 && requestConfig.headers?.Authorization && this.onUnauthorized) {
+        this.onUnauthorized()
+      }
 
       // Check for errors
       if (!response || response.error || !response.ok) {

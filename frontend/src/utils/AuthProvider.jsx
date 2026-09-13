@@ -1,28 +1,57 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { postLogin, postRegister } from '../api/endpoints'
+import { apiClient } from '../api/client'
 import mockServer from '../api/mockServer'
 
 const AuthContext = createContext(null)
 
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null)
-  const [token, setToken] = useState(null)
+// Returns the JWT expiry in ms, or null when the token has no readable exp claim (e.g. mock tokens)
+function getTokenExpiry(token) {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')))
+    return typeof payload.exp === 'number' ? payload.exp * 1000 : null
+  } catch (e) {
+    return null
+  }
+}
 
-  useEffect(() => {
+function loadStoredSession() {
+  try {
     const s = localStorage.getItem('auth_user')
     const t = localStorage.getItem('auth_token')
-    if (s && t) {
-      try {
-        const parsed = JSON.parse(s)
-        setUser(parsed)
-        setToken(t)
-        // re-seed mock server token mapping so in-memory mock recognizes persisted token
-        try {
-          mockServer.registerToken(t, parsed)
-        } catch (e) {}
-      } catch (e) {}
+    if (!s || !t) return null
+    const expiry = getTokenExpiry(t)
+    if (expiry !== null && expiry <= Date.now()) return null
+    return { user: JSON.parse(s), token: t }
+  } catch (e) {
+    return null
+  }
+}
+
+export function AuthProvider({ children }) {
+  const [session] = useState(loadStoredSession)
+  const [user, setUser] = useState(session?.user ?? null)
+  const [token, setToken] = useState(session?.token ?? null)
+
+  useEffect(() => {
+    if (!session) return
+    // re-seed mock server token mapping so in-memory mock recognizes persisted token
+    try {
+      mockServer.registerToken(session.token, session.user)
+    } catch (e) {}
+  }, [session])
+
+  // Log out when the token expires or the API rejects it
+  useEffect(() => {
+    if (!token) return
+    apiClient.onUnauthorized = logout
+    const expiry = getTokenExpiry(token)
+    const timer = expiry !== null ? setTimeout(logout, Math.min(Math.max(expiry - Date.now(), 0), 2147483647)) : null
+    return () => {
+      if (timer) clearTimeout(timer)
+      if (apiClient.onUnauthorized === logout) apiClient.onUnauthorized = null
     }
-  }, [])
+  }, [token])
 
   useEffect(() => {
     if (user && token) {
