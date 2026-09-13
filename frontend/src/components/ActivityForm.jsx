@@ -1,16 +1,34 @@
 import React, { useState } from 'react'
+import { validateRequired } from '../utils/validators'
 
-export default function ActivityForm({ initial = {}, onSubmit, submitLabel = 'Sačuvaj' }) {
-  const [form, setForm] = useState({ title: '', date: '', city: '', category: '', description: '', ...initial })
+const EMPTY_FORM = { title: '', date: '', city: '', category: '', description: '' }
+
+export default function ActivityForm({ initial, onSubmit, submitLabel = 'Sačuvaj' }) {
+  const [form, setForm] = useState({ ...EMPTY_FORM, ...initial })
+  const [error, setError] = useState(null)
+  const [saving, setSaving] = useState(false)
 
   function handleChange(e) {
     const { name, value } = e.target
     setForm((s) => ({ ...s, [name]: value }))
+    setError(null)
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
-    onSubmit(form)
+    if (!validateRequired(form.title) || !validateRequired(form.date) || !validateRequired(form.city) || !validateRequired(form.category)) {
+      setError('Naziv, datum, grad i kategorija su obavezni.')
+      return
+    }
+    setSaving(true)
+    try {
+      await onSubmit(form)
+      if (!initial) setForm(EMPTY_FORM)
+    } catch (err) {
+      setError(err.message || 'Greška pri čuvanju aktivnosti')
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -36,8 +54,9 @@ export default function ActivityForm({ initial = {}, onSubmit, submitLabel = 'Sa
         <textarea name="description" value={form.description} onChange={handleChange} />
       </label>
       <div className="form-actions">
-        <button className="btn primary" type="submit">{submitLabel}</button>
+        <button className="btn primary" type="submit" disabled={saving}>{saving ? '...' : submitLabel}</button>
       </div>
+      {error && <div className="toast error">{error}</div>}
     </form>
   )
 }

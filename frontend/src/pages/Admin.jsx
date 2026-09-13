@@ -14,6 +14,7 @@ export default function Admin() {
   const [participations, setParticipations] = useState([])
   const [contacts, setContacts] = useState([])
   const [volunteers, setVolunteers] = useState([])
+  const [actionError, setActionError] = useState(null)
 
   useEffect(() => {
     if (!auth?.token || auth.user?.role?.toLowerCase() !== 'admin') return
@@ -43,10 +44,30 @@ export default function Admin() {
     setEditing(null)
   }
 
+  // run an admin action and surface failures instead of leaving an unhandled rejection
+  async function runAction(fn) {
+    setActionError(null)
+    try {
+      await fn()
+    } catch (e) {
+      setActionError(e.message || 'Greška')
+    }
+  }
+
   async function handleDelete(id) {
     if (!confirm('Obrisati aktivnost?')) return
-    await deleteActivity(id, auth.token)
-    setActivities((s) => s.filter((a) => a.id !== id))
+    await runAction(async () => {
+      await deleteActivity(id, auth.token)
+      setActivities((s) => s.filter((a) => a.id !== id))
+      if (editing?.id === id) setEditing(null)
+    })
+  }
+
+  async function toggleCompleted(a) {
+    await runAction(async () => {
+      await updateActivity(a.id, { completed: !a.completed, _token: auth.token })
+      setActivities(await getActivities())
+    })
   }
 
   async function refreshParticipations() {
@@ -55,14 +76,18 @@ export default function Admin() {
   }
 
   async function changeParticipationStatus(id, status) {
-    await patchParticipation(id, { status, _token: auth.token })
-    await refreshParticipations()
+    await runAction(async () => {
+      await patchParticipation(id, { status, _token: auth.token })
+      await refreshParticipations()
+    })
   }
 
   async function changeVolunteerStatus(id, status) {
-    await patchVolunteer(id, { status, _token: auth.token })
-    const vols = await getVolunteers(auth.token)
-    setVolunteers(Array.isArray(vols) ? vols : [])
+    await runAction(async () => {
+      await patchVolunteer(id, { status, _token: auth.token })
+      const vols = await getVolunteers(auth.token)
+      setVolunteers(Array.isArray(vols) ? vols : [])
+    })
   }
 
   if (!auth?.token || auth.user?.role?.toLowerCase() !== 'admin') return <ErrorState message={'Samo za administratore'} />
@@ -72,6 +97,7 @@ export default function Admin() {
   return (
     <main className="container">
       <h1>Admin — Upravljanje aktivnostima</h1>
+      {actionError && <div className="toast error">{actionError}</div>}
 
       <section className="card">
         <h2>Dodaj novu aktivnost</h2>
@@ -89,7 +115,7 @@ export default function Admin() {
               <div className="admin-actions">
                 <button className="btn" onClick={() => setEditing(a)}>Izmijeni</button>
                 <button className="btn" onClick={() => handleDelete(a.id)}>Obriši</button>
-                <button className="btn" onClick={async () => { await updateActivity(a.id, { completed: !a.completed, _token: auth.token }); const acts = await getActivities(); setActivities(acts) }}>
+                <button className="btn" onClick={() => toggleCompleted(a)}>
                   {a.completed ? 'Označi aktivnom' : 'Označi završenom'}
                 </button>
               </div>
@@ -101,7 +127,7 @@ export default function Admin() {
       {editing && (
         <section className="card">
           <h2>Uredi aktivnost</h2>
-          <ActivityForm initial={editing} onSubmit={(vals) => handleUpdate(editing.id, vals)} submitLabel={'Ažuriraj'} />
+          <ActivityForm key={editing.id} initial={editing} onSubmit={(vals) => handleUpdate(editing.id, vals)} submitLabel={'Ažuriraj'} />
         </section>
       )}
 
