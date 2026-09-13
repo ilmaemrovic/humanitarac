@@ -12,23 +12,30 @@ Humanitarac DUNP is a full-stack web application for managing humanitarian proje
 
 ---
 
-## ✅ Current Status: FULLY OPERATIONAL
+## 🌐 Live Demo (Railway)
 
-### Frontend ✅ RUNNING
-- **URL:** http://localhost:5176
-- **Status:** Active with real API integration
-- **Features:** All pages and components working
+**https://humanitarac-production.up.railway.app**
 
-### Backend ✅ RUNNING  
-- **URL:** http://localhost:5000
-- **Database:** MySQL with seed data
-- **API:** Fully functional with JWT auth
+| Role  | Email                        | Password     |
+|-------|------------------------------|--------------|
+| Admin | `marko.ilic@example.com`     | `adminpass1` |
+| Admin | `aleksandar.v@example.com`   | `adminpass2` |
+| User  | `ilma.emrovic@example.com`   | `userpass1`  |
+| User  | `aldina.avdic@example.com`   | `userpass2`  |
 
-### Database ✅ RUNNING
-- **Type:** MySQL 8.0
-- **Host:** localhost:3306
-- **Database:** humanitarac_db
-- **Tables:** 7 (Users, Activities, Donations, Volunteers, Participations, Contacts, Migrations)
+- **Admin** accounts can create, edit, complete and delete activities, and manage participations, volunteers and contact messages (`/admin`).
+- **User** accounts can donate, join activities and manage their own tasks (`/tasks`).
+- New accounts can also be created via **Registracija**.
+
+---
+
+## ✅ Current Status: DEPLOYED
+
+- **Hosting:** Railway, project `fearless-energy`, environment `production`
+- **App service:** one Docker service that serves both the React frontend and the ASP.NET Core API (`/api/*`)
+- **Database:** Railway MySQL service; EF Core migrations are applied automatically on startup
+- **Deploys:** every push to `main` triggers a Railway build from the root `Dockerfile`
+- **Tables:** Users, Activities, Donations, Volunteers, Participations, Contacts, TaskItems, __EFMigrationsHistory
 
 ---
 
@@ -68,6 +75,8 @@ Open your browser to: **http://localhost:5176**
 
 ## 👤 Test Accounts
 
+These seeded accounts work both locally and on the [live demo](https://humanitarac-production.up.railway.app).
+
 ### Admin Account
 ```
 Email: marko.ilic@example.com
@@ -98,6 +107,7 @@ Role: User (can participate in activities)
 - ✅ Make donations
 - ✅ Sign up as volunteer
 - ✅ Join activities
+- ✅ Manage personal tasks (create, edit, filter, complete, delete)
 - ✅ View participation status
 - ✅ Save preferences
 
@@ -345,6 +355,14 @@ VITE_LOG_LEVEL=debug
 
 ## 🚀 Deployment
 
+### Railway (current)
+The app is live at **https://humanitarac-production.up.railway.app**.
+
+- Railway builds the root `Dockerfile`: it builds the frontend (with an empty `VITE_API_BASE_URL`, so API calls go to the same origin), publishes the backend, and serves the frontend from `wwwroot`.
+- The backend listens on Railway's `$PORT` and applies pending EF Core migrations on startup.
+- Required service variable: `ConnectionStrings__DefaultConnection` (points to the Railway MySQL service).
+- To deploy, push to `main`; check status with `railway status` or in the Railway dashboard.
+
 ### Production Checklist
 - [ ] Update JWT secret key
 - [ ] Configure MySQL with proper backups
@@ -423,8 +441,8 @@ For questions or issues about the project, refer to the documentation files:
 ## 📅 Project Timeline
 
 - **Feb 24, 2026:** Initial setup and configuration
-- **Current:** Full stack operational
-- **Future:** Production deployment, additional features
+- **Sep 13, 2026:** Tasks feature, bug fixes and deployment to Railway
+- **Future:** Additional features
 
 ---
 
@@ -450,6 +468,5 @@ This project is for humanitarian purposes. Usage should comply with applicable l
 ---
 
 **Version:** 0.1.0  
-**Last Updated:** February 24, 2026  
-**Status:** ✅ Ready for Development/Testing
-# Updated at Thu Feb 26 16:28:50 CET 2026
+**Last Updated:** September 13, 2026  
+**Status:** ✅ Deployed on Railway — https://humanitarac-production.up.railway.app
