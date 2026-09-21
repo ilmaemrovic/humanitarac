@@ -175,6 +175,37 @@ The frontend communicates with the backend via REST API:
 
 See [BACKEND_SETUP.md](BACKEND_SETUP.md) for full API documentation.
 
+### GraphQL
+
+Uz REST API, backend nudi i GraphQL endpoint (HotChocolate).
+
+- **Endpoint:** `/graphql` — live: https://humanitarac-production.up.railway.app/graphql
+- U browseru se otvara **Banana Cake Pop** UI za pisanje i izvršavanje upita.
+
+Primjer upita:
+```graphql
+{
+  activities {
+    id
+    title
+    city
+    category
+    date
+    completed
+  }
+}
+```
+
+Isti upit preko `curl`:
+```bash
+curl -X POST https://humanitarac-production.up.railway.app/graphql \
+  -H "Content-Type: application/json" \
+  -d '{"query":"{ activities { id title city } }"}'
+```
+
+Upit je definisan u `backend/GraphQL/Query.cs`, a registrovan u `Startup.cs`
+(`AddGraphQLServer()` + `MapGraphQL()`).
+
 ---
 
 ## 🛠️ Development

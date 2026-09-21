@@ -75,6 +75,9 @@ namespace HumanitaracApi
 
             // <Nullable>enable</Nullable> would otherwise make every non-nullable DTO string implicitly
             // [Required], rejecting partial updates like { status: "done" }. Controllers validate explicitly.
+            // GraphQL (endpoint /graphql)
+            services.AddGraphQLServer().AddQueryType<HumanitaracApi.GraphQL.Query>();
+
             services.AddControllers(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true)
                 .ConfigureApiBehaviorOptions(options => {
                     options.SuppressModelStateInvalidFilter = false;
@@ -107,6 +110,7 @@ namespace HumanitaracApi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapGraphQL();
                 if (hasFrontend)
                 {
                     // Client-side routes (e.g. /activities/a1) get index.html; unknown /api routes stay 404
